@@ -1,0 +1,775 @@
+---
+title: Teaching the Tidyverse in 2020
+author: Mine Çetinkaya-Rundel
+date: '2020-06-21'
+slug: teaching-the-tidyverse-in-2020
+categories:
+  - teach
+tags:
+  - tidyverse
+authors:
+  - mine
+photo:
+  url: https://unsplash.com/photos/oMpAz-DN-9I
+  author: Greg Rakozy
+---
+
+<style>
+stop {
+  padding: 1em 1em 1em 1em;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  font-weight: bold;
+  color: white;
+  background: #F05133 5px center/3em no-repeat;
+}
+.stop:before {
+  content: "✋ ";
+  font-size: 20px;
+}
+
+.question {
+  padding: 1em 1em 1em 1em;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  font-weight: bold;
+  background: #F4DC00 5px center/3em no-repeat;
+}
+.question:before {
+  content: "❓ ";
+  font-size: 20px;
+}
+
+.todo {
+  padding: 1em 1em 1em 1em;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  font-weight: bold;
+  background: #f5f5f5 5px center/3em no-repeat;
+}
+.todo:before {
+  content: "📌 ";
+  font-size: 20px;
+}
+</style>
+
+
+```{r include=FALSE, eval=FALSE}
+library(broom)
+library(scales)
+library(openintro)
+library(jsonlite)
+```
+
+```{block2, type = "todo"}
+Add intro
+```
+
+```{block2, type = "question"}
+What is the correct capitasation for Tidyverse? T for concept, t for package?
+```
+
+The oldest package in the tidyverse (`ggplot2?`) has now been around for `XXX` years, and we've been using the term "tidyverse" to describe the collection of these packages since 2016. 
+The tidyverse continues to evolve and some of recent updates to tidyverse packages are designed to make it easier for new learners to get started with doing data science in R. 
+
+```{block2, type = "question"}
+What is the oldest package, ggplot2 I believe? 
+```
+
+```{block2, type = "todo"}
+Add better segue
+```
+
+## Getting started with the tidyverse
+
+The [tidyverse](https://tidyverse.org/) is an opinionated collection of R packages designed for data science. 
+All packages share an underlying design philosophy, grammar, and data structures.
+
+If you're an avid reader of this blog, you probably already know this. 
+But how about your students? 
+How do we introduce them to the tidyverse, especially if they are also new to R?
+
+### 1. Start with the core packages
+
+Briefly state the primary purpose of each, in the order that students will encounter them in your course, e.g.
+
+  - **ggplot2** - data visualisation
+  - **dplyr** - data wrangling
+  - **readr** - reading data
+  - **tibble** - modern data frames
+  - **stringr** - string manipulation
+  - **forcats** - dealing with factors
+  - **tidyr** - data tidying
+  - **purrr** - functional programming
+  
+This is the order I recommend and that follows the curriculum outlined in [Data Science in a Box](https://datasciencebox.org/). 
+For audiences that are new to data science, R, and programming, I strongly recommend starting with visualisation (ggplot2) and delaying introducing functional programming (purrr) till later. 
+
+I usually like doing this with a visual with the pretty hex package logos. 
+I couldn't say for sure that this adds to learning, but it sure draws students in!
+
+```{r echo=FALSE, out.width="70%", fig.align="center", fig.cap="Hex logos for the eight core tidyverse packages and their primary purposes."}
+knitr::include_graphics("img/tidyverse-packages.png")
+```
+
+The important thing to note here is that I don't recommend bringing up the [non-core packages](https://www.tidyverse.org/packages/), i.e. those installed with the tidyverse, but not loaded along with it. 
+Regardless of the level you're teaching, chances are you won't be using *all* of those packages in a single course. 
+I recommend introducing other packages used in your course (whether they are a part of the tidyverse or not) as they become relevant to the topic you're covering, and simply highlight that the packages from the wider tidyverse share the design philosophy, grammar, and data structures as the core packages, e.g. **rvest** (for web scraping) plays nicely with pipes.
+
+```{block2, type = "question"}
+Are the others called non-core packages?
+```
+
+### 2. `library(tidyverse)`
+
+Load all packages with:
+
+```{r eval=FALSE}
+library(tidyverse)
+```
+
+instead of loading the core packages individually.
+
+```{block2, type = "todo"}
+Add reasons why
+```
+
+### 3. Review the package loading message
+
+Review what the following message that is printed when the tidyverse package is loaded means.
+
+```{r echo=FALSE}
+library(tidyverse)
+```
+
+I think this is the hardest step of them all, because *really* understanding some of this requires understanding package versions, name spaces, and the `::` operator, none of which are things I like to get into in the first 10 minutes of a class. 
+But overlooking messages/warnings/errors is also not a habit I like to model. 
+My suggestion is to 
+
+- suppress package loading messages on the first day activity (which is straightforward if students start off with a template R Markdown document that you prepared, where the chunk where you load tidyverse has `meesage = FALSE` set);
+- starting on the second day of class go through what the message means in full, with assurances to students that they don't need to "worry" about it, but it's worth for them to see it.
+
+### 4. Help them get help
+
+#### Anatomy of R help docs
+
+```{block2, type = "todo"}
+Credit Kieran Healy for the idea, and add a simplified version from one of tidyverse functions.
+```
+
+#### Gooling for help
+
+Googling how to do something is obvious, but it's not always obvious how best to Google for help. 
+Appending the search phrase with "tidyverse" is almost always helpful for tidyverse specific help, but not always obvious to new learners. 
+
+```{r echo=FALSE, out.width="80%", fig.align="center", fig.cap="Search results for 'how to make a boxplot in R' with and without 'tidyverse' appended to the search phrase."}
+knitr::include_graphics("img/tidyverse-google.png")
+```
+
+```{block2, type = "question"}
+I'm hesitant to list reprex here because it's really not so easy for true new learners, tempted to revisit at the end of post and say it's definitely worth teaching, but it's difficult very early on. Thoughts?
+```
+
+<img src="img/tidy-papers.png" align="right" height="250" alt="Screenshots of the two tidyverse papers referenced in text."></a>
+
+### 5. Provide background
+
+Assign / suggest the following papers to read early on in the course.
+
+- Wickham, Hadley. ["Tidy data."](https://www.jstatsoft.org/article/view/v059i10) Journal of Statistical Software 59.10 (2014): 1-23.
+- Wickham, Hadley, et al. ["Welcome to the Tidyverse."](https://joss.theoj.org/papers/10.21105/joss.01686) Journal of Open Source Software 4.43 (2019): 1686.
+
+---
+
+## What's new in the tidyverse?
+
+```{block2, type="todo"}
+There should be a better title for this section, since it's not so much about what's new (it's not a comprehensive list) but what might be relevant to teaching, especially at the into level.
+```
+
+```{block2, type="question"}
+Any topics I'm missing? Any other organisation you would suggest?
+```
+
+- Data wrangling and tidying:
+
+  - Reshaping data: `pivot_*()`
+
+  - Column-wise operations: `across()` and `summarise()`
+
+  - Row-wise operations: Take the mean of repeated measurements with `rowwise()` and `c_across()`
+
+  - Grouped summaries: `group_by()` and `summerise()` and the new message -- how to interpret?
+  
+```{r}
+# With message
+mpg %>%
+  group_by(class) %>%
+  summarise(mean_cty = mean(cty))
+```
+
+```{r}
+# Drop groups
+mpg %>%
+  group_by(class) %>%
+  summarise(mean_cty = mean(cty), .groups = "drop")
+```
+
+```{r}
+# Keep groups
+mpg %>%
+  group_by(class) %>%
+  summarise(mean_cty = mean(cty), .groups = "keep")
+```
+
+- Data visualisation:
+  - Single box plot
+
+```{r}
+ggplot(mpg, aes(x = cty)) +
+  geom_boxplot()
+```
+
+  - No more `coord_flip()`
+  
+```{r}
+# with coord_flip
+ggplot(mpg, aes(x = class)) +
+  geom_bar() +
+  coord_flip()
+```
+
+```{r}
+# without coord_flip
+ggplot(mpg, aes(y = class)) +
+  geom_bar()
+```
+  
+  - scales & forcats to improve visualisations -- don't think of it just as cosmetic
+
+```{r}
+library(scales)
+```
+
+```{r}
+mpg %>%
+  count(class) %>%
+  mutate(prop = n / sum(n)) %>%
+  ggplot(aes(x = prop, y = class)) +
+  geom_col()
+```
+
+```{r}
+mpg %>%
+  count(class) %>%
+  mutate(prop = n / sum(n)) %>%
+  ggplot(aes(x = prop, y = fct_reorder(class, prop))) +
+  geom_col() +
+  scale_x_continuous(labels = percent)
+```
+
+- When to purrr?
+  - Reading in many files: use `vroom()` instead
+  - Flattening JSON files: use `unnest_*()` instead
+  - Example for when to use purrr: web scraping many pages
+
+### Data wrangling and tidying:
+
+1. Reshaping data with `pivot_*()`
+
+[This report](https://www.aaup.org/sites/default/files/files/AAUP_Report_InstrStaff-75-11_apr2013.pdf) by the American Association of University Professors (AAUP) provides the following dataset.
+
+```{r load-data-staff, message=FALSE}
+staff <- read_csv("data/instructional-staff.csv")
+staff
+```
+
+Current data:
+
+- Rows: Faculty types 
+- Columns: Years 
+
+What do we want to do?
+
+Recreate the following visualisation:
+
+```{r echo=FALSE, fig.height=3.5, fig.width=8}
+library(scales)
+staff %>%
+  pivot_longer(cols = -faculty_type, 
+               names_to = "year", 
+               values_to = "percentage") %>%
+  mutate(
+    year = as.numeric(year),
+    part_time = if_else(faculty_type == "Part-Time Faculty", "Part-Time Faculty", "Other Faculty")
+    ) %>%
+  ggplot(aes(x = year, y = percentage/100, group = faculty_type, 
+             color = fct_rev(part_time))) +
+  geom_line() +
+  scale_color_manual(values = c("red", "gray")) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  theme_minimal() +
+  labs(
+    title = "Instructional staff employment trends",
+    x = "Year",
+    y = "Percentage",
+    color = ""
+  ) +
+  theme(legend.position = "bottom")
+```
+
+What do we need?
+
+- Rows: Year/faculty type combination
+- Columns: Faculty type, percentage of hires of that type of faculty for each year
+
+Previously you might have approached this with the `gather()`/`spread()` functions. 
+I recommend using the `pivot_*()` functions (from the tidyr package) for this task now.
+
+```{r echo=FALSE}
+knitr::include_graphics("img/tidyr-longer-wider.gif")
+```
+
+Before embarking in the code, it's useful to ask questions about what the expected output will look like in terms or number of rows and columns, e.g. *"If the long data will have a row for each year/faculty type combination, and there are 5 faculty types and 11 years of data, how many rows will the data have?"*. 
+Having some expectation about what the output of a function will look like is good practice to instil in students.
+
+```{r eval=FALSE}
+pivot_longer(data, cols, 
+             names_to = "name", 
+             values_to = "value")
+```
+
+- The first argument is the `data` frame, as usual
+- The second argument, `cols`, is where you specify which columns to pivot into longer format 
+- The third argument, `names_to`, is a string specifying the name of the variable to create from column names of the original data
+- The fourth argument, `values_to`, is a string specifying the name of the variable to create from the data stored in the cells of the original data
+
+```{r}
+staff %>%
+  pivot_longer(cols = -faculty_type, 
+               names_to = "year", 
+               values_to = "percentage")
+```
+
+And then we can use this to 
+
+```{r staff-plot}
+staff %>%
+  pivot_longer(cols = -faculty_type, 
+               names_to = "year", 
+               values_to = "percentage") %>%
+  mutate(
+    year = as.numeric(year),
+    part_time = if_else(faculty_type == "Part-Time Faculty", "Part-Time Faculty", "Other Faculty")
+    ) %>%
+  ggplot(aes(x = year, y = percentage/100, group = faculty_type, 
+             color = fct_rev(part_time))) +
+  geom_line() +
+  scale_color_manual(values = c("red", "gray")) +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  theme_minimal() +
+  labs(
+    title = "Instructional staff employment trends",
+    x = "Year",
+    y = "Percentage",
+    color = ""
+  ) +
+  theme(legend.position = "bottom")
+```
+
+2. Column-wise operations:
+
+Professor evaluations, from the **openintro** package
+
+```{r mesage=FALSE}
+library(openintro)
+evals
+```
+
+So long `mutate_*()`, hello `across()`
+
+- `across()` makes it easy to apply the same transformation to multiple columns, allowing you to use `select() `semantics inside in `summarise()` and `mutate()`
+- `across()` supersedes the family of *scoped variants* like `summarise_at()`, ``summarise_if()`, and `summarise_all()`
+- This is the recommended approach in dplyr 1.0.0
+
+```{r}
+evals %>%
+  mutate(across(where(is.factor), as.character))
+```
+
+Task: Calculate means beauty score for each rank
+
+```{r}
+evals %>%
+  group_by(rank) %>%
+  summarise(across(starts_with("bty"), mean))
+```
+
+Task: Rename columns as you calculate summaries
+
+```{r}
+evals %>%
+  group_by(rank) %>%
+  summarise(across(starts_with("bty"), mean, .names = "{col}_mean"))
+```
+
+3. Row-wise operations
+
+Lots of discussion around how to do these in the tidyverse, see [github.com/jennybc/row-oriented-workflows](https://github.com/jennybc/row-oriented-workflows) for in depth coverage.
+
+Sometimes you need to do a simple thing, e.g. taking average of repeated measures recorded in columns in a data frame.
+
+```{r}
+evals %>% select(score, starts_with("bty_"))
+```
+
+`rowwise()` is back, baby!
+
+```{r}
+evals %>%
+  rowwise() %>%
+  mutate(bty_avg = mean(c(bty_f1lower, bty_f1upper, bty_f2upper, bty_m1lower, bty_m1upper, bty_m2upper))) %>%
+  ungroup() %>%
+  select(starts_with("bty_"))
+```
+
+### Data visualisation
+
+### When to purrr?
+
+1. Reading in many files
+
+2. Flattening JSON files
+
+We have data on Lego sales and some information on the buyers in JSON format. We want to covert it into a tidy data frame.
+
+```{r echo=FALSE}
+library(jsonlite)
+sales <- read_rds("data/lego_sales.rds")
+toJSON(sales[1], pretty = TRUE)
+```
+
+purrr solution:
+
+```{r}
+sales %>%
+  purrr::map_dfr(
+    function(l) {
+      purchases <- purrr::map_dfr(l$purchases, ~.)
+      l$purchases <- NULL
+      l$hobbies <- list(l$hobbies)
+      cbind(as_tibble(l), purchases) %>% as_tibble()
+    }
+  )
+```
+
+tidyr solution 
+
+
+```{r}
+# step 1
+sales %>%
+  tibble(sales = .)
+```
+
+```{r}
+# step 2
+sales %>%
+  tibble(sales = .) %>%
+  unnest_wider(sales)
+```
+
+```{r}
+# step 3
+sales %>%
+  tibble(sales = .) %>%
+  unnest_wider(sales) %>%
+  unnest_longer(purchases)
+```
+
+```{r}
+# step 4
+sales %>%
+  tibble(sales = .) %>%
+  unnest_wider(sales) %>%
+  unnest_longer(purchases) %>%
+  unnest_wider(purchases)
+```
+
+
+```{r}
+# auto!
+sales %>%
+  tibble(sales = .) %>%
+  unnest_auto(sales) %>%
+  unnest_auto(purchases) %>%
+  unnest_auto(purchases)
+```
+
+```{block2, type="question"}
+Not sure if this is something I should get into?
+```
+
+Suppose you want to repeatedly apply a function that reports back two values (e.g. lower and upper bounds of confidence interval).
+
+For simplicity, let's say this function just randomly generates two values from the normal distribution.
+
+```{r}
+foo <- function(i){
+  tibble(
+    x = rnorm(1),
+    y = rnorm(1)
+  )
+}
+```
+
+purrr solution 
+
+```{r}
+map_dfr(1:5, foo)
+```
+
+dplyr solution
+
+```{r}
+tibble(id = 1:5) %>% 
+  group_by(id) %>% 
+  summarise(foo())
+```
+
+Moral of the story
+
+- There are many ways of getting to the answer
+- Some likely need more scaffolding than others
+- It's worth considering how much of `purrr` fits into your introductory data science curriculum
+
+---
+
+## Resources to have on your radar
+
+```{block2, type="question"}
+Any others you recommend (without making it tooooo long a list)?
+```
+
+In no particular order...
+
+- [Illustrations os statistical topics and R packages](Allison Horst's ) by Allison Horst
+- [Animations of tidyverse verbs using R, the tidyverse, and gganimate](https://www.garrickadenbuie.com/project/tidyexplain/) by Garrick Aden-Buie
+
+```{r echo=FALSE}
+knitr::knit_exit()
+```
+
+## Why tidyverse?
+
+```{block2, type = "stop"}
+Took this from my slides on teaching the tidyverse but I don't think it belongs in this blog post. Parking here for now.
+```
+
+### Recoding a binary variable
+
+#### Base R
+
+```{r}
+mtcars$transmission <-
+  ifelse(mtcars$am == 0,
+         "automatic",
+         "manual")
+```
+
+
+#### Tidyverse
+
+```{r}
+mtcars <- mtcars %>%
+  mutate(
+    transmission =
+      case_when(
+    am == 0 ~ "automatic",
+    am == 1 ~ "manual"
+    )
+  )
+```
+]
+
+### Recoding a multi-level variable
+
+#### Base R
+
+```{r}
+mtcars$gear_char <-
+  ifelse(mtcars$gear == 3,
+    "three",
+    ifelse(mtcars$gear == 4,
+      "four",
+      "five"))
+```
+
+#### Tidyverse
+
+```{r}
+mtcars <- mtcars %>%
+  mutate(
+    gear_char =
+      case_when(
+    gear == 3 ~ "three",
+    gear == 4 ~ "four",
+    gear == 5 ~ "five"
+    )
+  )
+```
+
+### Visualising multiple variables
+
+#### Base R
+
+```{r fig.height=1.5}
+mtcars$trans_color <- ifelse(mtcars$transmission == "automatic", "green", "blue")
+par(mar = c(2.5, 2.5, 0, 0), mgp = c(1.5, 0.5, 0))
+plot(mtcars$mpg ~ mtcars$disp, col = mtcars$trans_color)
+legend("topright", legend = c("automatic", "manual"),
+       pch = 1, col = c("green", "blue"))
+```
+
+#### Tidyverse
+
+```{r fig.height=1.7}
+ggplot(mtcars,
+       aes(x = disp, y = mpg, color = transmission)) +
+  geom_point()
+```
+
+### Visualising even more variables
+
+#### Base R
+
+```{r fig.height=1.2}
+mtcars_cyl4 = mtcars[mtcars$cyl == 4, ]
+mtcars_cyl6 = mtcars[mtcars$cyl == 6, ]
+mtcars_cyl8 = mtcars[mtcars$cyl == 8, ]
+par(mfrow = c(1, 3), mar = c(2.5, 2.5, 2, 0), mgp = c(1.5, 0.5, 0))
+plot(mpg ~ disp, data = mtcars_cyl4, col = trans_color, main = "Cyl 4")
+plot(mpg ~ disp, data = mtcars_cyl6, col = trans_color, main = "Cyl 6")
+plot(mpg ~ disp, data = mtcars_cyl8, col = trans_color, main = "Cyl 8")
+legend("topright", legend = c("automatic", "manual"),
+       pch = 1, col = c("green", "blue"))
+```
+
+#### Tidyverse
+
+```{r fig.height=1.5}
+ggplot(mtcars,
+       aes(x = disp, y = mpg, color = transmission)) +
+  geom_point() +
+  facet_wrap(~ cyl)
+```
+
+### Benefits of starting with the tidyverse
+
+- (Closer to) human readable
+- Consistent syntax
+- Ease of multivariate visualizations
+- Growth opportunities:
+  - dplyr -> SQL
+  - purrr -> functional programming
+
+
+
+### .pink[ Sample slide ]
+
+## ggplot2 $\in$ tidyverse
+
+.pull-left[
+```{r echo=FALSE, out.width="80%"}
+knitr::include_graphics("img/ggplot2-part-of-tidyverse.png")
+```
+]
+.pull-right[
+- **ggplot2** is tidyverse's data visualization package
+- The `gg` in "ggplot2" stands for Grammar of Graphics
+- It is inspired by the book **Grammar of Graphics** by Leland Wilkinson
+]
+
+## Why start with ggplot2?
+
+1. Students come in with intuition for being able to interpret data visualizations without needing much instructions. 
+  - Focus the majority of class time initially on R syntax and leave interpretations to students. 
+  - Later on the scale tips -- spend more class time on concepts and results interpretations and less on R syntax.
+
+1. It can be easier for students to detect mistakes in visualisations compared to those in data wrangling or statistical modeling. 
+
+**Ex 1. It can be more difficult, especially for a new learner, to catch errors in data wrangling than in a data visualisation.**
+
+Suppose we want to find the average mileage of cars with more than 100 horsepower.
+
+- Left: Incorrect because `hp` is numeric, so no filtering is done, but also no error is given.
+- Right: Correct, and note that reported mean is different.
+
+```{r wrong-filter, echo=TRUE, size = "small"}
+mtcars %>%
+  filter(hp > "100") %>%
+  summarise(mean(mpg))
+```
+
+```{r right-filter, echo=TRUE, size = "small"}
+mtcars %>%
+  filter(hp > 100) %>%
+  summarise(mean(mpg))
+```
+
+**Ex 2. It can be difficult to catch modeling errors, again especially for new learners.** 
+
+Fit a model predicting gas efficiency (`mpg`) from engine (`vs`, where `0` means V-shaped and `1` means straight). 
+- Left: Incorrect, fit model where `vs` numeric
+- Right: Correct, fit model where `vs` factor (categorical)
+- Note: Slope estimates same.
+
+
+```{r model-binary-predictor-numeric, echo=TRUE, eval=FALSE, size="small"}
+lm(mpg ~ vs, data = mtcars)
+```
+```{r echo=FALSE, size="small"}
+m_bin_num <- lm(mpg ~ vs, data = mtcars)
+tidy(m_bin_num) %>% 
+  select(term, estimate) %>% 
+  data.frame() %>% 
+  print(row.names = FALSE)
+```
+
+```{r model-binary-predictor-factor, echo=TRUE, eval=FALSE, size="small"}
+lm(mpg ~ as.factor(vs), data = mtcars)
+```
+```{r echo=FALSE, size="small"}
+m_bin_fac <- lm(mpg ~ as.factor(vs), data = mtcars)
+tidy(m_bin_fac) %>% 
+  select(term, estimate) %>% 
+  data.frame() %>% 
+  print(row.names = FALSE)
+```
+
+Predict `mpg` from `gear` (the number of forward gears)
+
+- Note: slope estimates are different for numeric (left) vs. categorical (right) `gear`
+- Reason for difference may be obvious to someone who is already familiar with modeling and dummy variable encoding, but not to new learners
+
+```{r model-multilevel-predictor-numeric-fit, echo=TRUE, eval=FALSE, size="small"}
+lm(mpg ~ gear, data = mtcars)
+```
+```{r model-multilevel-predictor-numeric-print, echo=FALSE, size="small"}
+m_mul_num <- lm(mpg ~ gear, data = mtcars)
+tidy(m_mul_num) %>% 
+  select(term, estimate) %>% 
+  data.frame() %>% 
+  print(row.names = FALSE)
+```
+
+```{r model-multilevel-predictor-factor-fit, echo=TRUE, eval=FALSE, size="small"}
+lm(mpg ~ as.factor(gear), data = mtcars)
+```
+```{r model-multilevel-predictor-factor-print, echo=FALSE, size="small"}
+m_mul_fac <- lm(mpg ~ as.factor(gear), data = mtcars)
+tidy(m_mul_fac) %>% 
+  select(term, estimate) %>% 
+  data.frame() %>% 
+  print(row.names = FALSE)
+```
